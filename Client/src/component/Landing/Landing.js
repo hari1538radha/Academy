@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import NavBar from "../Navbar/navbar";
 import img1 from "./Img/Frame.svg";
@@ -18,6 +18,7 @@ import { userProfileData } from "../../Store/Slice/UserprofilePageSlice";
 import { getUniversityInfoByName } from "../../Store/Slice/SearchUniversity";
 import { postLoginUser } from "../../Store/Slice/LoginSlice";
 import ListEvent from "../Event/ListEvent/ListEvent";
+// import { objectTraps } from "immer/dist/internal";
 
 function Landing() {
   const navigate = useNavigate();
@@ -29,24 +30,28 @@ function Landing() {
   const navigateSearch = () => {
     navigate("/search");
   };
-
   useEffect(() => {
     dispatch(getTopicInfo());
     dispatch(getEventInfo());
     dispatch(userProfileData(locationState?.email));
   }, []);
+  const[searchedData,setSearchedData]=useState([]);
+  console.log(searchedData);
+  useEffect(()=>{
+    setSearchedData(SearchedUniversity.data);
+  },[]);
   const handelSearch = (e) => {
     e.preventDefault();
     const ele = e.target.elements
-    const searchedUniversity =ele[0].value
-    console.log( searchedUniversity)
-    dispatch(getUniversityInfoByName({searchedUniversity}))
-  
+    const searchedUniversity = ele[0].value
+    console.log(searchedUniversity)
+    dispatch(getUniversityInfoByName({ searchedUniversity }))
   };
 
   const { topicData, topicLoading } = useSelector((state) => state.topicInfo);
   const { eventsData, eventLoading } = useSelector((state) => state.eventsInfo);
   const { userData, loading } = useSelector((state) => state.userProfileInfo);
+  const { SearchedUniversity, SearchedUniversityLoading } = useSelector((state) => state.searchUniversityByNameInfo);
   return (
     <div>
       <NavBar profileInfo={userData.data} />
@@ -91,9 +96,16 @@ function Landing() {
             </button>
           </div>
         </div>
+        <div>
+      </div>
       </form>
-
-
+      {/* {
+        searchedData?.data?.length>0 && searchedData.data.map((obj)=>(
+          <div key={obj._id}>
+            <p>{obj.Name_1}clg</p>
+          </div>
+        ))
+      } */}
       <div className="third-container">
         <div className="third-content">
           <div className="third-top">
